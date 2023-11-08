@@ -4,3 +4,5 @@ plotly.express
 requests
 BeautifulSoup
 bs4
+functions
+graphs
