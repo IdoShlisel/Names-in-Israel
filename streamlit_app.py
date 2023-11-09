@@ -15,9 +15,7 @@ else:
 
 st.set_page_config(page_title="שמות בישראל",page_icon="random",layout=layout,initial_sidebar_state="auto")
 
-st.checkbox(
-    "האם צופים במובייל?", key="center", value=st.session_state.get("center", False)
-)
+
 
 
 
@@ -38,6 +36,11 @@ data=f.get_data("Names File.xlsx")
 sector,names,years=f.data_identifiers(data)
 
 st.header("שמות בישראל מ 1948 עד 2021")
+
+st.checkbox(
+    "לצפייה במובייל", key="center", value=st.session_state.get("center", False)
+)
+
 title='''
 מה השם הנפוץ בישראל?  
    מתי נולדו הכי הרבה ילדים עם השם שלי?  
@@ -51,7 +54,7 @@ st.divider()
 
 
 
-if "center" not in st.session_state:
+if layout == "wide":
     # decleration of the slidbar
     with st.sidebar:   
         st.header("מה השם?")
@@ -85,8 +88,8 @@ if "center" not in st.session_state:
         st.plotly_chart(g.treemap_names(data=data,year= year,N_names= N_names,sector=show_sector),use_container_width=True)
      
 
-    #st.plotly_chart(g.pichart_name_by_sector(data=data,name=selected_name),use_container_width=True)
-else:
+
+else:  #if the application in mobill
 
 
     st.header("מה השם?")
@@ -96,27 +99,26 @@ else:
     selected_name=st.selectbox("יש לבחור שם",names,index=290)
     max_born, max_born_year=f.max_born_at_year(selected_name, data)
     # Display formatted text
-    st.metric(f"השנה בה נולדו הכי הרבה {selected_name}", max_born_year)
-    st.metric("מספר התינוקות שנולדו בשנה זו בשם זה",max_born)
+    col1,col2=st.columns(2)
+    col1.metric(f"השנה בה נולדו הכי הרבה {selected_name}", max_born_year)
+    col2.metric("מספר התינוקות שנולדו בשנה זו בשם זה",max_born)
     with st.expander(f"פירוש השם {selected_name}:"):
         st.markdown(f.name_description(selected_name))
 
-    col1 ,col2=st.columns(2,gap="medium")
-    with col1:
-        name_list = st.multiselect('בחר שמות להשוואה על ציר הזמן',names,selected_name)
-        st.subheader(f"כמות התינוקות שנולדו לאורך השנים")
-        st.plotly_chart(g.name_by_year(data, name_list),use_container_width=True)
+
+    name_list = st.multiselect('בחר שמות להשוואה על ציר הזמן',names,selected_name)
+    st.subheader(f"כמות התינוקות שנולדו לאורך השנים")
+    st.plotly_chart(g.name_by_year(data, name_list),use_container_width=True)
                 
 
-        
-    with col2:
-        col11,col22,col33=st.columns(3)
-        year=col11.selectbox("בחר שנה",years,index=years.index(max_born_year))
-        N_names=col22.number_input(label="כמה שמות להראות?",min_value=0,max_value=60,value=10)
-        col33.markdown("#")
-        show_sector=col33.checkbox('להראות חלוקה לפי מגזר?')
-        st.subheader(f"השמות הכי נפוצים לשנת {year}")
-        st.plotly_chart(g.treemap_names(data=data,year= year,N_names= N_names,sector=show_sector),use_container_width=True)
+
+    col11,col22,col33=st.columns(3)
+    year=col11.selectbox("בחר שנה",years,index=years.index(max_born_year))
+    N_names=col22.number_input(label="כמה שמות להראות?",min_value=0,max_value=60,value=10)
+    col33.markdown("#")
+    show_sector=col33.checkbox('להראות חלוקה לפי מגזר?')
+    st.subheader(f"השמות הכי נפוצים לשנת {year}")
+    st.plotly_chart(g.treemap_names(data=data,year= year,N_names= N_names,sector=show_sector),use_container_width=True)
      
 
 
