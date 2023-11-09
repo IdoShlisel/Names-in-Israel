@@ -8,8 +8,18 @@ import functions as f
 import streamlit as st
 import graphs as g
 
+if "center" not in st.session_state:
+    layout = "wide"
+else:
+    layout = "centered" if st.session_state.center else "wide"
 
-st.set_page_config(page_title="שמות בישראל",page_icon="random",layout="wide",initial_sidebar_state="auto")
+st.set_page_config(page_title="שמות בישראל",page_icon="random",layout=layout,initial_sidebar_state="auto")
+
+st.checkbox(
+    "האם צופים במובייל?", key="center", value=st.session_state.get("center", False)
+)
+
+
 
 #set page layout-# Set the text direction right side page
 st.markdown(f"""<style>body {{  direction: rtl;}}</style>""", unsafe_allow_html=True)
@@ -26,10 +36,6 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 #get the data as st.chach
 data=f.get_data("Names File.xlsx")
 sector,names,years=f.data_identifiers(data)
-@st.experimental_breakpoints(768)
-def app():
-    if st.session_state.breakpoint == 768:
-        st.write("סמלים גדולים יותר")
 
 st.header("שמות בישראל מ 1948 עד 2021")
 title='''
