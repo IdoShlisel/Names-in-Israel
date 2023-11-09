@@ -35,7 +35,7 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 data=f.get_data("Names File.xlsx")
 sector,names,years=f.data_identifiers(data)
 
-st.header("שמות בישראל מ 1948 עד 2021")
+st.header("שמות בישראל")
 
 st.checkbox(
     "לצפייה במובייל", key="center", value=st.session_state.get("center", False)
