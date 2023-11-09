@@ -49,12 +49,49 @@ st.markdown(title)
 
 st.divider()
 
-# decleration of the slidbar
-with st.sidebar:   
+
+
+if "center" not in st.session_state:
+    # decleration of the slidbar
+    with st.sidebar:   
+        st.header("מה השם?")
+        st.markdown('''
+                    יש לבחור שם להשוואה.  השם יעודכן בגרף משמאל ויציג כמה ילדים נולדו בשם כל שנה  
+                    כמו כן אם יש לנו פירוש שם השם- תוכלו למצוא אותו למטה:tulip:
+                    ''')
+        selected_name=st.selectbox("יש לבחור שם",names,index=290)
+        max_born, max_born_year=f.max_born_at_year(selected_name, data)
+        # Display formatted text
+        st.metric(f"השנה בה נולדו הכי הרבה {selected_name}", max_born_year)
+        st.metric("מספר התינוקות שנולדו בשנה זו בשם זה",max_born)
+        with st.expander(f"פירוש השם {selected_name}:"):
+            st.markdown(f.name_description(selected_name))
+
+    col1 ,col2=st.columns(2,gap="medium")
+    with col1:
+        name_list = st.multiselect('בחר שמות להשוואה על ציר הזמן',names,selected_name)
+        st.subheader(f"כמות התינוקות שנולדו לאורך השנים")
+        st.plotly_chart(g.name_by_year(data, name_list),use_container_width=True)
+                
+
+        
+    with col2:
+        col11,col22,col33=st.columns(3)
+        year=col11.selectbox("בחר שנה",years,index=years.index(max_born_year))
+        N_names=col22.number_input(label="כמה שמות להראות?",min_value=0,max_value=60,value=10)
+        col33.markdown("#")
+        show_sector=col33.checkbox('להראות חלוקה לפי מגזר?')
+        st.subheader(f"השמות הכי נפוצים לשנת {year}")
+        st.plotly_chart(g.treemap_names(data=data,year= year,N_names= N_names,sector=show_sector),use_container_width=True)
+     
+
+    #st.plotly_chart(g.pichart_name_by_sector(data=data,name=selected_name),use_container_width=True)
+else:
+
+
     st.header("מה השם?")
     st.markdown('''
-                יש לבחור שם להשוואה.  השם יעודכן בגרף משמאל ויציג כמה ילדים נולדו בשם כל שנה  
-                כמו כן אם יש לנו פירוש שם השם- תוכלו למצוא אותו למטה:tulip:
+                    יש לבחור שם להשוואה.  השם יעודכן בגרף משמאל ויציג כמה ילדים נולדו בשם כל שנ                    כמו כן אם יש לנו פירוש שם השם- תוכלו למצוא אותו למטה:tulip:
                 ''')
     selected_name=st.selectbox("יש לבחור שם",names,index=290)
     max_born, max_born_year=f.max_born_at_year(selected_name, data)
@@ -64,22 +101,22 @@ with st.sidebar:
     with st.expander(f"פירוש השם {selected_name}:"):
         st.markdown(f.name_description(selected_name))
 
-col1 ,col2=st.columns(2,gap="medium")
-with col1:
-    name_list = st.multiselect('בחר שמות להשוואה על ציר הזמן',names,selected_name)
-    st.subheader(f"כמות התינוקות שנולדו לאורך השנים")
-    st.plotly_chart(g.name_by_year(data, name_list),use_container_width=True)
-            
+    col1 ,col2=st.columns(2,gap="medium")
+    with col1:
+        name_list = st.multiselect('בחר שמות להשוואה על ציר הזמן',names,selected_name)
+        st.subheader(f"כמות התינוקות שנולדו לאורך השנים")
+        st.plotly_chart(g.name_by_year(data, name_list),use_container_width=True)
+                
 
-    
-with col2:
-    col11,col22,col33=st.columns(3)
-    year=col11.selectbox("בחר שנה",years,index=years.index(max_born_year))
-    N_names=col22.number_input(label="כמה שמות להראות?",min_value=0,max_value=60,value=10)
-    col33.markdown("#")
-    show_sector=col33.checkbox('להראות חלוקה לפי מגזר?')
-    st.subheader(f"השמות הכי נפוצים לשנת {year}")
-    st.plotly_chart(g.treemap_names(data=data,year= year,N_names= N_names,sector=show_sector),use_container_width=True)
- 
+        
+    with col2:
+        col11,col22,col33=st.columns(3)
+        year=col11.selectbox("בחר שנה",years,index=years.index(max_born_year))
+        N_names=col22.number_input(label="כמה שמות להראות?",min_value=0,max_value=60,value=10)
+        col33.markdown("#")
+        show_sector=col33.checkbox('להראות חלוקה לפי מגזר?')
+        st.subheader(f"השמות הכי נפוצים לשנת {year}")
+        st.plotly_chart(g.treemap_names(data=data,year= year,N_names= N_names,sector=show_sector),use_container_width=True)
+     
 
-#st.plotly_chart(g.pichart_name_by_sector(data=data,name=selected_name),use_container_width=True)
+
