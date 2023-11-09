@@ -26,7 +26,10 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 #get the data as st.chach
 data=f.get_data("Names File.xlsx")
 sector,names,years=f.data_identifiers(data)
-
+@st.experimental_breakpoints(768)
+def app():
+    if st.session_state.breakpoint == 768:
+        st.write("סמלים גדולים יותר")
 
 st.header("שמות בישראל מ 1948 עד 2021")
 title='''
